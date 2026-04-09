@@ -1,4 +1,12 @@
-﻿# ![Blender-CoD logo](https://raw.githubusercontent.com/CoDEmanX/blender-cod/master/blender-cod-logo.png) Blender-CoD #
+# Blender 5 Fixes #
+
+This fixes the addon for Blender 5. Based on a fork that fixed it for Blender 4. Quite untested but for my use case in World at War which was rigging models and animating a gun it worked well.
+ 
+Known unfixed/broken/bugged things:
+
++ Exporting notetracks as a separate file (.NT_EXPORT) breaks the xanim exported alongside it. Just keep that ticked off or work around it.
+ 
+ # ![Blender-CoD logo](https://raw.githubusercontent.com/CoDEmanX/blender-cod/master/blender-cod-logo.png) Blender-CoD #
 *Blender Add-On for Call of Duty® modding*
 
 Import / export addon for Call of Duty's intermediate model and animation plaintext file formats - no Maya required.
