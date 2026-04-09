@@ -42,9 +42,11 @@ def calc_frame_range(action):
     action.frame_range is inaccurate for actions with 0 or 1 keyframe(s)
     This function returns the real (inclusive) frame range for a given action
     '''
-    if len(action.fcurves) == 0:
+    slot = action.slots[0]
+    fcurves = action.layers[0].strips[0].channelbag(slot).fcurves
+    if len(fcurves) == 0:
         return (0, 0)
-    keys = [fcurve.keyframe_points for fcurve in action.fcurves]
+    keys = [fcurve.keyframe_points for fcurve in fcurves]
     points = [point for keyframe_points in keys for point in keyframe_points]
     frames = [point.co[0] for point in points]
     return (min(frames), max(frames))

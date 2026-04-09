@@ -36,11 +36,14 @@ class NoteTrack(object):
         self.notes = []
         self.first_frame = None
         self.frame_count = None
+        
         file = open(filepath, "r")
         for line in file:
             note_count = 0
 
             line_split = line.split()
+            if len(line_split) < 1:
+                continue
             if line_split[0] == "FIRSTFRAME":
                 self.first_frame = int(line_split[1])
             elif line_split[0] == "NUMFRAMES":
@@ -349,6 +352,7 @@ class Anim(XBinIO, object):
             filepath = os.path.realpath(file.name)
             notetrack_filepath = find_notetrack_file(filepath)
             if notetrack_filepath is not None:
+                print(notetrack_filepath)
                 nt = NoteTrack.FromFile_Raw(notetrack_filepath)
                 first_frame = min([f.frame for f in self.frames])
                 frame_count = len(self.frames)
