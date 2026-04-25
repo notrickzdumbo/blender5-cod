@@ -369,8 +369,30 @@ def load(self, context,
                 else:
                     setup_tri(f)
 
+        # Changed order of events. Create object & vertex groups THEN set vertex weights
+        bm.to_mesh(mesh) # Not sure if this needs to be done first
+
+        if split_meshes:
+            obj_name = "%s_%s" % (model.name, mesh.name)
+        else:
+            obj_name = model.name
+
+        # Create the model object and link it to the scene
+        obj = bpy.data.objects.new(obj_name, mesh)
+        mesh_objs.append(obj)
+
+        scene.collection.objects.link(obj)
+        view_layer.objects.active = obj
+
+        # Create Vertex Groups
+        # This no longer automatically weight the verts based on the deform groups ;)
+        bone_index = {}
+        for i,bone in enumerate(model.bones):
+            obj.vertex_groups.new(name=bone.name.lower())
+            bone_index[bone.name.lower()] = i
+
         # Vertex Weights
-        deform_layer = bm.verts.layers.deform.new()
+        deform_layer = bm.verts.layers.deform.verify()
         for vert_index, vert in enumerate(sub_mesh.verts):
             for bone, weight in vert.weights:
                 bm.verts[vert_index][deform_layer][bone] = weight
@@ -386,7 +408,7 @@ def load(self, context,
             mesh.materials.append(mat)
 
         bm.to_mesh(mesh)
-
+        
         # For this mesh remove all materials that aren't used by its faces
         # material_index, material_usage_index must be tracked manually because
         # enumerate() doesn't compensate for the removed materials properly
@@ -445,22 +467,7 @@ def load(self, context,
             if bpy.app.version < (4, 1, 0):
                 mesh.calc_normals()
 
-        if split_meshes:
-            obj_name = "%s_%s" % (model.name, mesh.name)
-        else:
-            obj_name = model.name
-
-        # Create the model object and link it to the scene
-        obj = bpy.data.objects.new(obj_name, mesh)
-        mesh_objs.append(obj)
-
-        scene.collection.objects.link(obj)
-        view_layer.objects.active = obj
-
-        # Create Vertex Groups
-        # These automatically weight the verts based on the deform groups
-        for bone in model.bones:
-            obj.vertex_groups.new(name=bone.name.lower())
+       
 
         # Assign the texture images to the current mesh (for Texture view)
         if load_images:
