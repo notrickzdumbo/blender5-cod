@@ -247,9 +247,13 @@ class ExportMesh(object):
             # Get the first vertex color layer that isn't active
             #  If one can't be found, fallback to the active layer
             for layer in self.mesh.vertex_colors:
-                if layer is not vc_layer:
+                if layer == vc_layer:
+                    continue
+                else:
                     vca_layer = layer
                     break
+            if vca_layer == vc_layer:
+                print("no secondary layer")
 
         alpha_default = 1.0
 
@@ -264,42 +268,24 @@ class ExportMesh(object):
         for polygon in self.mesh.polygons:
             face = XModel.Face(0, 0)
             face.material_id = self.materials[polygon.material_index]
-            # if vc_layer is not None:
-            #     vert_colors = vc_layer.data[polygon.index]
-            #     poly_colors = [vert_colors.color1,
-            #                    vert_colors.color2, vert_colors.color3]
-
-            #     # Calculate alpha values for the verts for this polygon
-            #     if vca_layer is None:
-            #         alphas = [alpha_default] * 3
-            #     else:
-            #         vert_colors = vca_layer.data[polygon.index]
-            #         alphas = [sum(vert_colors.color1) / 3,
-            #                   sum(vert_colors.color2) / 3,
-            #                   sum(vert_colors.color3) / 3]
-
-            #     colors = [tuple(c) + (a,) for c, a in zip(poly_colors, alphas)]
-            # else:
-            #     colors = [(1.0, 1.0, 1.0, alpha_default)] * 4
-
+            
             for i, loop_index in enumerate(polygon.loop_indices):
                 loop = self.mesh.loops[loop_index]
                 uv = uv_layer.data[loop_index].uv
                 if vc_layer is not None:
-                    vert_colors = vc_layer.data[loop.vertex_index]
+                    vert_colors = vc_layer.data[loop_index]
                     poly_colors = vert_colors.color
 
                     # Calculate alpha values for the verts for this polygon
-                    # if vca_layer is None:
-                    #     alpha = alpha_default
-                    # else:
-                    #     vert_colors = vca_layer.data[polygon.index]
-                    #     alpha = [sum(vert_colors.color1) / 3,
-                    #             sum(vert_colors.color2) / 3,
-                    #             sum(vert_colors.color3) / 3]
+                    if vca_layer is None:
+                        alpha = poly_colors[3]
+                    else:
+                        vert_colors = vca_layer.data[loop_index]
+                        alpha_poly_colors = vert_colors.color[0:3]
+                        alpha = sum(alpha_poly_colors)/3.0
 
                     color = (poly_colors[0], poly_colors[1],
-                             poly_colors[2], poly_colors[3])
+                             poly_colors[2], alpha)
                 else:
                     color = (1.0, 1.0, 1.0, alpha_default)
 

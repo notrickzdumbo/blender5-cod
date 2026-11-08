@@ -506,30 +506,29 @@ class COD_MT_export_xmodel(bpy.types.Operator, ExportHelper):
 
     use_vertex_colors: BoolProperty(
         name="Vertex Colors",
-        description=("Export vertex colors "
+        description=("Export vertex colors. Color Attribute options MUST be set to Corner Byte mode "
                      "(if disabled, white color will be used)"),
         default=True
     )
 
     #  White is 1 (opaque), black 0 (invisible)
     use_vertex_colors_alpha: BoolProperty(
-        name="Calculate Alpha",
-        description=("Automatically calculate alpha channel for vertex colors "
-                     "by averaging the RGB color values together "
-                     "(if disabled, 1.0 is used)"),
+        name="Legacy Vertex Alpha",
+        description=("Calculate alpha channel for vertex colors through another layer "
+                     "by averaging the RGB color values of it together "
+                     "This is not needed as vertex colors have an alpha channel"
+                     "(if disabled, alpha channel is used)"),
         default=False
     )
 
     use_vertex_colors_alpha_mode: EnumProperty(
         name="Vertex Alpha Source Layer",
         description="The target vertex color layer to use for calculating the alpha values",  # nopep8
-        items=(('PRIMARY', "Active Layer",
-                "Use the active vertex color layer to calculate alpha"),
-               ('SECONDARY', "Secondary Layer",
+        items=(('SECONDARY', "Secondary Layer",
                 ("Use the secondary (first inactive) vertex color layer to calculate alpha "  # nopep8
                  "(If only one layer is present, the active layer is used)")),
                ),
-        default='PRIMARY'
+        default='SECONDARY'
     )
 
     use_vertex_cleanup: BoolProperty(
