@@ -6,6 +6,7 @@ This fixes the addon for Blender 5. Based on a fork that fixed it for Blender 4.
 Known unfixed/broken/bugged things:
 
 + Exporting notetracks as a separate file (.NT_EXPORT) breaks the xanim exported alongside it. Just keep that ticked off or work around it.
++ Vertex Colors still use the old API, so in order to use them the color attribute MUST be set to Face Corned and Byte Color mode. Additionally the alpha channel now works, but the option is still given to do it the old way (through a separate layer) 
  
  # ![Blender-CoD logo](https://raw.githubusercontent.com/CoDEmanX/blender-cod/master/blender-cod-logo.png) Blender-CoD (Old Description) #
 *Blender Add-On for Call of Duty® modding*
